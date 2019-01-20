@@ -12,6 +12,17 @@
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
 
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/buttons.dataTables.min.css') }}" rel="stylesheet">
+    <style>
+        .navbar .navbar-brand-wrapper .navbar-brand img {
+            width: calc(255px - 30px);
+            height: 48px;
+        }
+        .navbar .navbar-brand-wrapper{
+            background: transparent;
+        }
+    </style>
+    @stack('style')
 </head>
 <body>
 <div id="app">

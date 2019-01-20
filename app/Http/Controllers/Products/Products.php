@@ -92,7 +92,7 @@ class Products extends Controller
                     <button  class="btn btn-primary btn-sm" type="button" id="settingcol"><a  class="text-white" href="'.route('product_stock_link',['product_id' => $data->id]).'"> Open Card </a></button>
                         </td>';
             }) ->editColumn('active', function(product $product) {
-                return $product->active ? 'Available' : 'Out of stock';
+                return $product->active ? 'Available' : 'Deactivated';
             })
             ->make(true);
     }

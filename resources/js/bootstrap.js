@@ -65,6 +65,7 @@ require('./dashboard')
 require('./maps')
 window.PNotify = require('./pnotify.custom.min')
 window.DataTable = require('./jquery.dataTables')
+
 // window.DataTable = require('./dataTables.bootstrap4')
 
 

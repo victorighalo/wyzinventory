@@ -15,11 +15,11 @@
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     <style>
         .auth.login-full-bg {
-            background: url("{{asset('images/auth/login_1.jpg')}}");
+            background: url("{{asset('images/bg.jpg')}}");
             background-size: cover; }
 
         .auth.register-full-bg {
-            background: url("{{asset('images/auth/register_1.jpg')}}");
+            background: url("{{asset('images/bg.jpg')}}");
             background-size: cover; }
     </style>
 </head>

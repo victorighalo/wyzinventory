@@ -3,81 +3,27 @@
     <div class="main-panel">
         <div class="content-wrapper">
 
-            <div class="row justify-content-center flex-grow mb-5 mt-5">
-                <div class="col-12">
-                    <div class="card">
-                        <div class="card-body">
-                            <h4 class="card-title">Products form
-                                <a class="btn btn-link float-right" data-toggle="collapse" href="#form_collapse" role="button" aria-expanded="false" aria-controls="collapseExample">
-                                    <i class="fas fa-ellipsis-v"></i>
-                                </a></h4>
-                            <p class="card-description">
-                                Fill the form below to create a Product
-                            </p>
-                            <div class="collapse" id="form_collapse">
-                                <form id="create_super_agent">
-                                    @csrf
-                                    <div class="row form-group">
-                                        <div class="col-sm-6">
-                                            <label for="name">{{ __('Product name') }}</label>
-                                            <input type="text" id="name" class="form-control{{ $errors->has('name') ? ' is-invalid' : '' }}" name="name" value="{{ old('name') }}" required autofocus>
-                                            @if ($errors->has('name'))
-                                                <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $errors->first('name') }}</strong>
-                                    </span>
-                                            @endif
-                                            <span class="invalid-feedback errorshow" role="alert">
-                                        </span>
-                                        </div>
-
-                                        {{--<div class="col-sm-6">--}}
-                                            {{--<label for="category">{{ __('Category') }}</label>--}}
-                                            {{--<select id="category" class="form-control" name="category" >--}}
-                                                {{--@foreach($categories as $category)--}}
-                                                {{--<option value="{{$category->id}}">{{ucfirst($category->name)}}</option>--}}
-                                                    {{--@endforeach--}}
-                                                    {{--<option value=""><a href="#">Add</a></option>--}}
-                                            {{--</select>--}}
-                                            {{--@if ($errors->has('category'))--}}
-                                                {{--<span class="invalid-feedback" role="alert">--}}
-                                        {{--<strong>{{ $errors->first('category') }}</strong>--}}
-                                    {{--</span>--}}
-                                            {{--@endif--}}
-                                            {{--<span class="invalid-feedback errorshow" role="alert">--}}
-                                        {{--</span>--}}
-                                        {{--</div>--}}
-                                    </div>
-
-
-                                    <div class="mt-5">
-                                        <button class="btn float-left btn-warning btn-lg font-weight-medium submitformbtn" type="submit">
-                                            <i class="fas fa-spinner fa-spin off process_indicator"></i>
-                                            <span>{{ __('Create') }}</span>
-                                        </button>
-                                    </div>
-
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-
             <div class="row">
-                <div class="col-12 grid-margin">
+                <div class="col-12 grid-margin mt-5">
                     <div class="card">
                         <div class="card-body">
-                            <h5 class="card-title mb-4">Products</h5>
+                            <h5 class="card-title mb-4">Stock records for <span class="font-weight-bold">{{$data->name}}</span></h5>
                             <div class="table-responsive">
                                 <table class="table table-bordered" id="users-table">
                                     <thead>
                                     <tr>
-                                        <th>Name</th>
-                                        {{--<th>Category</th>--}}
-                                        <th>Active</th>
-                                        <th>Created At</th>
-                                        <th>Setting</th>
+                                        <th>Date</th>
+                                        <th>Product</th>
+                                        <th>Description</th>
+                                        <th>Qty Received</th>
+                                        <th>Qty Issued Out</th>
+                                        <th>Current balance</th>
+                                        <th>Invoice no</th>
+                                        <th>Bacth no</th>
+                                        <th>MFD date</th>
+                                        <th>EXP date</th>
+                                        <th>Remark</th>
+                                        <th>Audit</th>
                                     </tr>
                                     </thead>
                                 </table>
@@ -93,11 +39,13 @@
 @endsection
 
 @push('script')
-    <script src="{{asset('js/dataTables.buttons.min.js')}}"></script>
+    {{--<script src="{{asset('js/dataTables.buttons.min.js')}}"></script>--}}
     <script type="text/javascript" src="https://cdn.datatables.net/r/dt/jq-2.1.4,jszip-2.5.0,pdfmake-0.1.18,dt-1.10.9,af-2.0.0,b-1.0.3,b-colvis-1.0.3,b-html5-1.0.3,b-print-1.0.3,se-1.0.1/datatables.min.js"></script>
+
     <script>
         var baseurl = "<?php echo config('app.url') ?>"
         var stateid;
+        var user_id = "<?php  $linkcount = count(explode('/',url()->current())); echo explode('/',url()->current())[$linkcount-1] ?>"
 
         $(document).ready(function () {
             $("form#create_super_agent").on('submit', function (e) {
@@ -153,12 +101,19 @@
         var superagentstable = $('#users-table').DataTable({
             processing: true,
             serverSide: true,
-            ajax: '{!! route('get_products') !!}',
+            ajax: '{!! route('get_storekeepers_stock_data_audit') !!}/'+user_id,
             columns: [
-                { data: 'name', name: 'name' },
-                // { data: 'category_id', name: 'category' },
-                { data: 'active', name: 'active' },
                 { data: 'created_at', name: 'created_at' },
+                { data: 'productname', name: 'productname' },
+                { data: 'description', name: 'description' },
+                { data: 'qtyreceived', name: 'qtyreceived' },
+                { data: 'qtyout', name: 'qtyout' },
+                { data: 'currentbalance', name: 'currentbalance' },
+                { data: 'invoiceno', name: 'invoiceno' },
+                { data: 'bacthno', name: 'bacthno' },
+                { data: 'mfd_date', name: 'mfd_date' },
+                { data: 'exp_date', name: 'exp_date' },
+                { data: 'remark', name: 'remark' },
                 {data: 'action', name: 'action', orderable: false, searchable: false}
             ],
             "dom": 'lBrtip',
@@ -175,7 +130,6 @@
                     ]
                 }
             ]
-
         });
 
 

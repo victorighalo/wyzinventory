@@ -46,12 +46,20 @@ Route::get('products/activate/{id}', 'Products\Products@activate');
 
 
 //Clerks
-Route::get('clerk','Clerks\Clerks@index');
+Route::get('storekeeper/products','Clerks\Clerks@index');
 
 //Stock
 Route::get('product/{product_id}/stockcard', 'Clerks\Clerks@stockCard')->name('product_stock_link');
 Route::get('product/stockcarddata/{product_id?}', 'Clerks\Clerks@stockCardData')->name('product_stock_data');
 Route::post('product/stock/create', 'Stock\Stock@addStock')->name('create_stock_record');
+
+
+//Audit
+Route::get('audit/storekeepers', 'Audit\Storekeepers@index');
+Route::get('audit/storekeepers/data','Audit\Storekeepers@getSuperAgents')->name('get_storekeepers_data_audit');
+Route::get('audit/storekeepers/stock/{user_id?}','Audit\Storekeepers@getSuperAgentsStock')->name('get_storekeepers_stock');
+Route::get('audit/storekeepers/{user_id}/stock/{product_id}/audittrail','Audit\Storekeepers@getSuperAgentsStockAuditTrail')->name('get_storekeepers_stock_audittrail');
+Route::get('audit/storekeepers/stock/data/{user_id?}','Audit\Storekeepers@getSuperAgentsStockData')->name('get_storekeepers_stock_data_audit');
 
 Auth::routes();
 

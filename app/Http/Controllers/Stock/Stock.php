@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Stock;
 
 use App\stockcard;
+use App\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\product;
@@ -41,13 +42,16 @@ class Stock extends Controller
         if($validator->fails()){
             return response()->json(['message' => $validator->errors()], 400);
         }
+
+        $currbal = (stockcard::currentBalance(Auth::id(), $request->product_id ) + $request->qtyreceived)  - $request->qtyout;
+
         $stock = stockcard::create([
             'description' => $request->description,
             'qtyreceived' => $request->qtyreceived,
             'qtyout' => $request->qtyout,
             'invoiceno' => $request->invoiceno,
             'bacthno' => $request->bacthno,
-            'currentbalance' => 0,
+            'currentbalance' => $currbal,
             'mfd_date' => $request->mfd_date,
             'exp_date' => $request->exp_date,
             'remark' => $request->remark,
@@ -55,9 +59,27 @@ class Stock extends Controller
             'user_id' => Auth::id(),
         ]);
 
-        $stock->update(['currentbalance' => stockcard::currentBalance(Auth::id(), $request->product_id ) - $request->qtyout,]);
-
         return response()->json(['data' => $stock], 200);
+    }
+
+    public function getSuperAgents(Request $request)
+    {
+        $superagents = User::role('superagent')->get();
+        return Datatables::of($superagents)->editColumn('created_at', function ($superagents) {
+            return $superagents->created_at ? with(new Carbon($superagents->created_at))->toDayDateTimeString() : '';
+        })
+            ->addColumn('action', function ($superagents) {
+                return '      <td>
+                                  <button class="btn btn-primary btn-sm" type="button" ><a href="'.route('get_storekeepers_stock',['user_id' => $superagents->id]).'" class="text-white"> View records</a> </button>
+                                                    </td>';
+            })  ->addColumn('active', function ($superagents) {
+                if($superagents->active){
+                    return "Active";
+                }else{
+                    return "Deactivated";
+                }
+            })
+            ->make(true);
     }
 
 }

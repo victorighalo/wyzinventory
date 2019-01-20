@@ -67,7 +67,7 @@ class SuperAgents extends Controller
             return response()->json(['message' => $validator->errors()], 400);
         }
         $user = User::create([
-            'name' => $request['name'],
+            'firstname' => $request['name'],
             'email' => $request['email'],
             'phone' => $request['phone'],
             'active' => 1,

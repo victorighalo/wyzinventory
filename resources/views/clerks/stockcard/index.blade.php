@@ -33,7 +33,7 @@
 
                                     <div class="col-sm-2">
                                         <label for="qtyreceived">{{ __('Qty Received In') }}</label>
-                                        <input type="num" id="qtyreceived" class="form-control{{ $errors->has('qtyreceived') ? ' is-invalid' : '' }}" name="qtyreceived" value="{{ old('qtyreceived') }}" required>
+                                        <input type="number" id="qtyreceived" class="form-control{{ $errors->has('qtyreceived') ? ' is-invalid' : '' }}" name="qtyreceived" value="{{ old('qtyreceived') }}" required>
                                         @if ($errors->has('qtyreceived'))
                                             <span class="invalid-feedback" role="alert">
                                         <strong>{{ $errors->first('qtyreceived') }}</strong>
@@ -57,7 +57,7 @@
 
                                     <div class="col-sm-2">
                                         <label for="invoiceno">{{ __('Invoice no') }}</label>
-                                        <input type="numer" id="invoiceno" class="form-control" name="invoiceno" required>
+                                        <input type="number" id="invoiceno" class="form-control" name="invoiceno" required>
                                         @if ($errors->has('invoiceno'))
                                             <span class="invalid-feedback" role="alert">
                                         <strong>{{ $errors->first('invoiceno') }}</strong>
@@ -123,7 +123,7 @@
 
 
                                 <div class="mt-5">
-                                    <button class="btn btn-block btn-warning btn-lg font-weight-medium submitformbtn" type="submit">
+                                    <button class="btn float-right btn-warning btn-lg font-weight-medium submitformbtn" type="submit">
                                         <i class="fas fa-spinner fa-spin off process_indicator"></i>
                                         <span>{{ __('Add') }}</span>
                                     </button>
@@ -157,6 +157,7 @@
                                     <th>MFD date</th>
                                     <th>EXP date</th>
                                     <th>Remark</th>
+
                                 </tr>
                                 </thead>
                             </table>
@@ -176,7 +177,6 @@
     var baseurl = "<?php echo config('app.url') ?>"
     var stateid;
     var product_id = "<?php  $linkcount = count(explode('/',url()->current())); echo explode('/',url()->current())[$linkcount-2] ?>"
-    console.log(product_id)
     $(document).ready(function () {
         $("form#create_super_agent").on('submit', function (e) {
             e.preventDefault();
