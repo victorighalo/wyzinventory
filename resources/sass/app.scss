@@ -1,0 +1,20 @@
+
+// Fonts
+@import url('https://fonts.googleapis.com/css?family=Nunito');
+@import url("https://fonts.googleapis.com/css?family=Poppins:400,500,600");
+$mdi-font-path: '~mdi/fonts/';
+// Variables
+@import 'variables';
+
+// Bootstrap
+@import '~bootstrap/scss/bootstrap';
+
+@import './style.css';
+@import './pnotify.custom.min.css';
+@import './datatables.min.css';
+@import './jquery.dataTables.min.css';
+@import './dataTables.bootstrap4.min.css';
+
+.off{
+  display: none;
+}
