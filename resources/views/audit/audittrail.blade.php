@@ -44,11 +44,11 @@
                                                    @foreach($item['old_values'] as $old_value)
                                                    <tr>
                                                        <td>{{$old_value['description']}}</td>
+                                                       <td>{{$old_value['qtyreceived']}}</td>
                                                        <td>{{$old_value['qtyout']}}</td>
-                                                       <td>{{$old_value['invoiceno']}}</td>
+                                                       <td>{{$old_value['currentbalance']}}</td>
                                                        <td>{{$old_value['invoiceno']}}</td>
                                                        <td>{{$old_value['bacthno']}}</td>
-                                                       <td>{{$old_value['currentbalance']}}</td>
                                                        <td>{{$old_value['mfd_date']}}</td>
                                                        <td>{{$old_value['exp_date']}}</td>
                                                        <td>{{$old_value['remark']}}</td>
@@ -77,11 +77,11 @@
                                                         <tbody>
                                                             <tr>
                                                                 <td>{{$item['new_values']['description']}}</td>
+                                                                <td>{{$item['new_values']['qtyreceived']}}</td>
                                                                 <td>{{$item['new_values']['qtyout']}}</td>
-                                                                <td>{{$item['new_values']['invoiceno']}}</td>
+                                                                <td>{{$item['new_values']['currentbalance']}}</td>
                                                                 <td>{{$item['new_values']['invoiceno']}}</td>
                                                                 <td>{{$item['new_values']['bacthno']}}</td>
-                                                                <td>{{$item['new_values']['currentbalance']}}</td>
                                                                 <td>{{$item['new_values']['mfd_date']}}</td>
                                                                 <td>{{$item['new_values']['exp_date']}}</td>
                                                                 <td>{{$item['new_values']['remark']}}</td>
