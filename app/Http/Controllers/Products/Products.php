@@ -8,9 +8,13 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\product;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
 use Yajra\Datatables\Datatables;
+use App\Imports\ProductsImport;
+use Maatwebsite\Excel\Facades\Excel;
 class Products extends Controller
 {
     public function __construct()
@@ -74,9 +78,9 @@ class Products extends Controller
                     return "Deactivated";
                 }
             })
-            ->editColumn('category_id', function($product) {
-                return category::where('id', $product->category_id)->select('name')->first()->name;
-            })
+//            ->editColumn('category_id', function($product) {
+//                return category::where('id', $product->category_id)->select('name')->first()->name;
+//            })
             ->make(true);
     }
 
@@ -119,5 +123,20 @@ class Products extends Controller
         } catch (\Exception $e) {
             return response()->json(['message' => 'Failed to Activate Product'], 400);
         }
+    }
+
+    public function import(Request $request){
+
+        if($request->hasFile('file')){
+            $extension = File::extension($request->file->getClientOriginalName());
+            if ($extension == "xlsx" || $extension == "xls" || $extension == "csv") {
+                Excel::import(new ProductsImport, request()->file('file'));
+                return response()->json(['data' => 'Products uploaded'], 200);
+
+            }else {
+                return response()->json(['data' => 'Products failed to upload'], 400);
+            }
+        }
+        return response()->json(['data' => 'File not sent'], 400);
     }
 }

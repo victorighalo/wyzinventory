@@ -43,6 +43,7 @@ Route::get('get_products_clerks','Products\Products@getProductsClerks')->name('g
 Route::post('products/create','Products\Products@create');
 Route::get('products/deactivate/{id}', 'Products\Products@deactivate');
 Route::get('products/activate/{id}', 'Products\Products@activate');
+Route::post('products/import', 'Products\Products@import')->name('products_import');
 
 
 //Clerks

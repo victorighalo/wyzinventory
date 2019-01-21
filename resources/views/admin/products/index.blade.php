@@ -20,7 +20,7 @@
                                     <div class="row form-group">
                                         <div class="col-sm-6">
                                             <label for="name">{{ __('Product name') }}</label>
-                                            <input type="text" id="name" class="form-control{{ $errors->has('name') ? ' is-invalid' : '' }}" name="name" value="{{ old('name') }}" required autofocus>
+                                            <input type="text" id="name" class="form-control" name="name">
                                             @if ($errors->has('name'))
                                                 <span class="invalid-feedback" role="alert">
                                         <strong>{{ $errors->first('name') }}</strong>
@@ -28,6 +28,27 @@
                                             @endif
                                             <span class="invalid-feedback errorshow" role="alert">
                                         </span>
+                                            <br>
+                                            <button class="btn float-left btn-warning btn-lg font-weight-medium submitformbtn" type="submit">
+                                                <i class="fas fa-spinner fa-spin off process_indicator"></i>
+                                                <span>{{ __('Create') }}</span>
+                                            </button>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <label for="file">{{ __('Upload Excel file') }}</label>
+                                            <input type="file" id="file" class="form-control" name="file" >
+                                            @if ($errors->has('name'))
+                                                <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $errors->first('name') }}</strong>
+                                    </span>
+                                            @endif
+                                            <span class="invalid-feedback errorshow" role="alert">
+                                        </span>
+                                            <br>
+                                            <button class="btn float-right btn-warning btn-lg font-weight-medium uploadformbtn" type="submit">
+                                                <i class="fas fa-spinner fa-spin off process_indicator"></i>
+                                                <span>{{ __('Upload') }}</span>
+                                            </button>
                                         </div>
 
                                         {{--<div class="col-sm-6">--}}
@@ -46,14 +67,6 @@
                                             {{--<span class="invalid-feedback errorshow" role="alert">--}}
                                         {{--</span>--}}
                                         {{--</div>--}}
-                                    </div>
-
-
-                                    <div class="mt-5">
-                                        <button class="btn float-left btn-warning btn-lg font-weight-medium submitformbtn" type="submit">
-                                            <i class="fas fa-spinner fa-spin off process_indicator"></i>
-                                            <span>{{ __('Create') }}</span>
-                                        </button>
                                     </div>
 
                                 </form>
@@ -93,9 +106,14 @@
 @endsection
 
 @push('script')
-    <script src="{{asset('js/dataTables.buttons.min.js')}}"></script>
+    {{--<script src="{{asset('js/dataTables.buttons.min.js')}}"></script>--}}
     <script type="text/javascript" src="https://cdn.datatables.net/r/dt/jq-2.1.4,jszip-2.5.0,pdfmake-0.1.18,dt-1.10.9,af-2.0.0,b-1.0.3,b-colvis-1.0.3,b-html5-1.0.3,b-print-1.0.3,se-1.0.1/datatables.min.js"></script>
     <script>
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
         var baseurl = "<?php echo config('app.url') ?>"
         var stateid;
 
@@ -138,6 +156,64 @@
                             text: 'Form validation error.',
                             type: 'error'
                         });
+                    }
+                    else {
+                        new PNotify({
+                            title: 'Oops!',
+                            text: 'An Error Occurred. Please try again.',
+                            type: 'error'
+                        });
+                    }
+                })
+            });
+
+
+            $("button.uploadformbtn").on('click', function (e) {
+                e.preventDefault();
+                disableItem($(".uploadformbtn"), true)
+                $(".uploadformbtn .process_indicator").removeClass('off');
+                $("span.errorshow").html("")
+                var file_data = $('#file').prop('files')[0];
+                var form_data = new FormData();
+                form_data.append('file', file_data);
+
+                $.ajax({
+                    type: "POST",
+                    url: baseurl+'products/import',
+                    data: form_data,
+                    processData: false,
+                    contentType: false,
+                }).done(function (data) {
+                    superagentstable.ajax.reload();
+                    disableItem($("button.uploadformbtn"), false)
+                    $(".uploadformbtn .process_indicator").addClass('off');
+                    new PNotify({
+                        title: 'Success!',
+                        text: 'Product created.',
+                        type: 'success'
+                    });
+                }).fail(function (response) {
+                    disableItem($("button.uploadformbtn"), false)
+                    $(".uploadformbtn .process_indicator").addClass('off');
+                    if (response.status == 500) {
+                        new PNotify({
+                            title: 'Oops!',
+                            text: 'An Error Occurred. Please try again.',
+                            type: 'error'
+                        });
+                        return false;
+                    }
+                    if (response.status == 400) {
+                        $.each(response.responseJSON.message, function (key, item) {
+                            $("input[name="+key+"] + span.errorshow").html(item[0])
+                            $("input[name="+key+"] + span.errorshow").slideDown("slow")
+                        });
+                        new PNotify({
+                            title: 'Oops!',
+                            text: 'Form validation error.',
+                            type: 'error'
+                        });
+                        return false;
                     }
                     else {
                         new PNotify({
@@ -197,6 +273,7 @@
                                 type: "GET",
                                 url: baseurl+'products/deactivate/'+id,
                             }).done(function (data) {
+                                superagentstable.ajax.reload();
                                 notice.update({
                                     title: 'Product deactivated',
                                     text: 'Deactivation successful.',
