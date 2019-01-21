@@ -1,4 +1,5 @@
 <nav class="sidebar sidebar-offcanvas" id="sidebar">
+    @if(Auth::check())
     <ul class="nav">
         <li class="nav-item nav-profile">
             <div class="nav-link">
@@ -50,4 +51,5 @@
             </li>
             @endif
     </ul>
+        @endif
 </nav>
