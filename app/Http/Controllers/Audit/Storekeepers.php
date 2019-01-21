@@ -15,6 +15,12 @@ use Yajra\Datatables\Datatables;
 
 class Storekeepers extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware(['auth','role:auditor|admin']);
+    }
+
     public function index(Request $request)
     {
         $superagents = User::role('superagent')->get();
