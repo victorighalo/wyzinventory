@@ -15,14 +15,14 @@ class CreateStockcardsTable extends Migration
     {
         Schema::create('stockcards', function (Blueprint $table) {
             $table->increments('id');
-//            $table->foreign('product_id')->references('id')->on('products');
-//            $table->foreign('user_id')->references('id')->on('users');
-            $table->string('description');
+            $table->integer('product_id');
+            $table->integer('user_id');
+            $table->string('description')->nullable();
             $table->integer('qtyreceived')->default(0);
             $table->integer('qtyout')->default(0);
             $table->integer('currentbalance');
-            $table->string('invoiceno');
-            $table->string('bacthno');
+            $table->string('invoiceno')->nullable();
+            $table->string('bacthno')->nullable();
             $table->dateTime('mfd_date')->nullable();
             $table->dateTime('exp_date')->nullable();
             $table->string('remark')->nullable();
