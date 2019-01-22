@@ -152,6 +152,7 @@
                             text: 'An Error Occurred. Please try again.',
                             type: 'error'
                         });
+                        return false
                     }
                     if (response.status == 400) {
                         $.each(response.responseJSON.message, function (key, item) {
@@ -163,6 +164,7 @@
                             text: 'Form validation error.',
                             type: 'error'
                         });
+                        return false
                     }
                     else {
                         new PNotify({
@@ -170,6 +172,7 @@
                             text: 'An Error Occurred. Please try again.',
                             type: 'error'
                         });
+                        return false
                     }
                 })
             });
@@ -180,7 +183,7 @@
             serverSide: true,
             ajax: '{!! route('get_superagents') !!}',
             columns: [
-                { data: 'name', name: 'name' },
+                { data: 'firstname', name: 'firstname' },
                 { data: 'email', name: 'email' },
                 { data: 'active', name: 'active' },
                 { data: 'created_at', name: 'created_at' },

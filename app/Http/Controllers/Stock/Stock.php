@@ -43,7 +43,8 @@ class Stock extends Controller
             return response()->json(['message' => $validator->errors()], 400);
         }
 
-        $currbal = (stockcard::currentBalance(Auth::id(), $request->product_id ) + $request->qtyreceived)  - $request->qtyout;
+        $currbal = stockcard::currentBalance(Auth::id(), $request->product_id);
+          $newbalance  = ($currbal->currentbalance + $request->qtyreceived)  - $request->qtyout;
 
         $stock = stockcard::create([
             'description' => $request->description,
@@ -51,7 +52,7 @@ class Stock extends Controller
             'qtyout' => $request->qtyout,
             'invoiceno' => $request->invoiceno,
             'bacthno' => $request->bacthno,
-            'currentbalance' => $currbal,
+            'currentbalance' => $newbalance,
             'mfd_date' => $request->mfd_date,
             'exp_date' => $request->exp_date,
             'remark' => $request->remark,

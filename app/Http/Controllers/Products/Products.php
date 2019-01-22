@@ -23,8 +23,7 @@ class Products extends Controller
     }
 
     public function index(){
-        $categories = category::get();
-        return view('admin.products.index', compact('categories'));
+        return view('admin.products.index');
     }
 
     public function create(Request $request)
@@ -40,8 +39,7 @@ class Products extends Controller
 
 
         $product = product::create([
-            'name' => $request['name'],
-            'category_id' => $request['category']
+            'name' => $request['name']
         ]);
 
         return response()->json(['data' => $product, 'status' => '200'], 201);
@@ -87,13 +85,15 @@ class Products extends Controller
 
    public function getProductsClerks(Request $request)
     {
-        $data = product::get();
+        $data = product::where('active',1)->get();
         return Datatables::of($data)->editColumn('created_at', function ($data) {
             return $data->created_at ? with(new Carbon($data->created_at))->toDayDateTimeString() : '';
         })
             ->addColumn('action', function ($data) {
                 return '<td>
-                    <button  class="btn btn-primary btn-sm" type="button" id="settingcol"><a  class="text-white" href="'.route('product_stock_link',['product_id' => $data->id]).'"> Open Card </a></button>
+                    <a  class="text-white" href="'.route('product_stock_link',['product_id' => $data->id]).'">
+                    <button  class="btn btn-primary btn-sm" type="button" id="settingcol"> Open Card </button>
+                    </a>
                         </td>';
             }) ->editColumn('active', function(product $product) {
                 return $product->active ? 'Available' : 'Deactivated';

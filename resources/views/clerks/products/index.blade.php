@@ -12,7 +12,6 @@
                                     <thead>
                                     <tr>
                                         <th>Name</th>
-                                        <th>Category</th>
                                         <th>Available</th>
                                         <th>Setting</th>
                                     </tr>
@@ -91,8 +90,7 @@
             ajax: '{!! route('get_products_clerks') !!}',
             columns: [
                 { data: 'name', name: 'name' },
-                { data: 'category_id', name: 'category' },
-                { data: 'active', name: 'available' },
+                { data: 'active', name: 'active' },
                 {data: 'action', name: 'action', orderable: false, searchable: false}
             ]
         });

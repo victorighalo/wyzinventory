@@ -93,7 +93,7 @@
             serverSide: true,
             ajax: '{!! route('get_storekeepers_data_audit') !!}',
             columns: [
-                { data: 'name', name: 'name' },
+                { data: 'firstname', name: 'firstname' },
                 { data: 'email', name: 'email' },
                 { data: 'active', name: 'active' },
                 { data: 'created_at', name: 'created_at' },

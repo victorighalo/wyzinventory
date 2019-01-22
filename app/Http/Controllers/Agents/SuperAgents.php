@@ -76,7 +76,7 @@ class SuperAgents extends Controller
 
         $user->assignRole('superagent');
 
-        return $user;
+        return response()->json(['data'=>'User Created', 'status' => '200'], 200);
     }
 
     public function destroy($id){

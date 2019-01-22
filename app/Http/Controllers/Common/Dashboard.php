@@ -7,6 +7,8 @@ use App\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Permission;
 class Dashboard extends Controller
 {
     public function __construct()
@@ -15,9 +17,6 @@ class Dashboard extends Controller
     }
     
     public function index(){
-        $user = User::where('id', 7)->first();
-        $user->assignRole('admin');
-
         if(Auth::user()->hasRole('admin')){
             return redirect('/products');
         }

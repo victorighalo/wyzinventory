@@ -23,6 +23,6 @@ class stockcard extends Model implements Auditable
 
     public function scopeCurrentBalance($query,$user_id, $product_id)
     {
-        return $query->where('user_id', $user_id)->where('product_id', $product_id)->sum('qtyreceived');
+        return $query->where('user_id', $user_id)->where('product_id', $product_id)->latest()->select('currentbalance')->first();
     }
 }
