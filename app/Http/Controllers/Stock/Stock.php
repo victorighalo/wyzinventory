@@ -24,14 +24,8 @@ class Stock extends Controller
     protected function validator(Request $data)
     {
         return Validator::make($data->all(), [
-            'description' => ['required', 'string'],
             'qtyreceived' => ['required','numeric'],
             'qtyout' => ['required','numeric'],
-            'invoiceno' => ['required'],
-            'bacthno' => ['required'],
-            'mfd_date' => ['required'],
-            'exp_date' => ['required'],
-            'remark' => ['required'],
             'product_id' => ['required']
         ]);
     }
@@ -52,6 +46,38 @@ class Stock extends Controller
         }
 
         $stock = stockcard::create([
+            'description' => $request->description,
+            'qtyreceived' => $request->qtyreceived,
+            'qtyout' => $request->qtyout,
+            'invoiceno' => $request->invoiceno,
+            'bacthno' => $request->bacthno,
+            'currentbalance' => $newbalance,
+            'mfd_date' => $request->mfd_date,
+            'exp_date' => $request->exp_date,
+            'remark' => $request->remark,
+            'product_id' => $request->product_id,
+            'user_id' => Auth::id(),
+        ]);
+
+        return response()->json(['data' => $stock], 200);
+    }
+
+    public function update(Request $request){
+
+//        $validator = $this->validator($request);
+        $newbalance = null;
+//        if($validator->fails()){
+//            return response()->json(['message' => $validator->errors()], 400);
+//        }
+
+        try {
+            $currbal = stockcard::currentBalance(Auth::id(), $request->product_id);
+            $newbalance = ($currbal->currentbalance + $request->qtyreceived) - $request->qtyout;
+        }catch (\Exception $e){
+            $newbalance = $request->qtyreceived;
+        }
+        $stock = stockcard::where('id' ,$request->product_id)->first();
+         $stock->fill([
             'description' => $request->description,
             'qtyreceived' => $request->qtyreceived,
             'qtyout' => $request->qtyout,

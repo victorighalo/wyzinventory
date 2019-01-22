@@ -8,10 +8,9 @@ window._ = require('lodash');
  */
 
 try {
-    window.Popper = require('popper.js').default;
-    window.$ = window.jQuery = require('jquery');
-
-    require('bootstrap');
+    window.Popper = require('popper.js/dist/popper.min');
+    window.$ = window.jQuery = require('jquery/dist/jquery.min');
+    require('bootstrap/dist/js/bootstrap');
 } catch (e) {}
 
 /**
@@ -56,7 +55,6 @@ let token = document.head.querySelector('meta[name="csrf-token"]');
 // });
 
 //Import other libraries
-
 window.chart = require('chart.js')
 require('./chart')
 require('./off-canvas')
