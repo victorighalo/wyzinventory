@@ -55,8 +55,9 @@ class Storekeepers extends Controller
         })
             ->addColumn('action', function ($superagents) {
                 return '      <td>
-                                  <button class="btn btn-primary btn-sm" type="button" ><a href="'.route('get_storekeepers_stock',['user_id' => $superagents->id]).'" class="text-white"> View records</a> </button>
-                                                    </td>';
+      <a href="'.route('get_storekeepers_stock',['user_id' => $superagents->id]).'" class="text-white">
+                                  <button class="btn btn-primary btn-sm" type="button" > View records </button>
+                                                   </a> </td>';
             })  ->addColumn('active', function ($superagents) {
                 if($superagents->active){
                     return "Active";

@@ -25,8 +25,8 @@ class Stock extends Controller
     {
         return Validator::make($data->all(), [
             'description' => ['required', 'string'],
-            'qtyreceived' => ['required'],
-            'qtyout' => ['required'],
+            'qtyreceived' => ['required','numeric'],
+            'qtyout' => ['required','numeric'],
             'invoiceno' => ['required'],
             'bacthno' => ['required'],
             'mfd_date' => ['required'],
@@ -39,12 +39,17 @@ class Stock extends Controller
     public function addStock(Request $request){
 
         $validator = $this->validator($request);
+        $newbalance = null;
         if($validator->fails()){
             return response()->json(['message' => $validator->errors()], 400);
         }
 
-        $currbal = stockcard::currentBalance(Auth::id(), $request->product_id);
-          $newbalance  = ($currbal->currentbalance + $request->qtyreceived)  - $request->qtyout;
+        try {
+            $currbal = stockcard::currentBalance(Auth::id(), $request->product_id);
+            $newbalance = ($currbal->currentbalance + $request->qtyreceived) - $request->qtyout;
+        }catch (\Exception $e){
+            $newbalance = $request->qtyreceived;
+        }
 
         $stock = stockcard::create([
             'description' => $request->description,

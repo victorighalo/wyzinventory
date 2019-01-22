@@ -33,7 +33,7 @@
 
                                     <div class="col-sm-2">
                                         <label for="qtyreceived">{{ __('Qty Received In') }}</label>
-                                        <input type="number" id="qtyreceived" class="form-control{{ $errors->has('qtyreceived') ? ' is-invalid' : '' }}" name="qtyreceived" value="{{ old('qtyreceived') }}" required>
+                                        <input type="number" id="qtyreceived" class="form-control" value="0" name="qtyreceived" value="{{ old('qtyreceived') }}" required>
                                         @if ($errors->has('qtyreceived'))
                                             <span class="invalid-feedback" role="alert">
                                         <strong>{{ $errors->first('qtyreceived') }}</strong>
@@ -45,7 +45,7 @@
 
                                     <div class="col-sm-2">
                                         <label for="qtyout">{{ __('Qty Issued Out') }}</label>
-                                        <input type="number" id="qtyout" class="form-control" name="qtyout" required>
+                                        <input type="number" id="qtyout" class="form-control" name="qtyout" value="0" required>
                                         @if ($errors->has('qtyout'))
                                             <span class="invalid-feedback" role="alert">
                                         <strong>{{ $errors->first('qtyout') }}</strong>
@@ -173,7 +173,9 @@
 @endsection
 
 @push('script')
-<script>
+    <script type="text/javascript" src="https://cdn.datatables.net/r/dt/jq-2.1.4,jszip-2.5.0,pdfmake-0.1.18,dt-1.10.9,af-2.0.0,b-1.0.3,b-colvis-1.0.3,b-html5-1.0.3,b-print-1.0.3,se-1.0.1/datatables.min.js"></script>
+
+    <script>
     var baseurl = "<?php echo config('app.url') ?>"
     var stateid;
     var product_id = "<?php  $linkcount = count(explode('/',url()->current())); echo explode('/',url()->current())[$linkcount-2] ?>"
@@ -205,6 +207,7 @@
                         text: 'An Error Occurred. Please try again.',
                         type: 'error'
                     });
+                    return false;
                 }
                 if (response.status == 400) {
                     $.each(response.responseJSON.message, function (key, item) {
@@ -216,6 +219,7 @@
                         text: 'Form validation error.',
                         type: 'error'
                     });
+                    return false;
                 }
                 else {
                     new PNotify({
@@ -243,7 +247,21 @@
     { data: 'mfd_date', name: 'mfd_date' },
     { data: 'exp_date', name: 'exp_date' },
     { data: 'remark', name: 'remark' }
-    ]
+    ],
+        "dom": 'lBrtip',
+        "buttons": [
+            {
+                extend: 'collection',
+                text: 'Export',
+                buttons: [
+                    'copy',
+                    'excel',
+                    'csv',
+                    'pdf',
+                    'print'
+                ]
+            }
+            ]
     });
 
 

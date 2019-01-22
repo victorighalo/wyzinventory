@@ -17,9 +17,9 @@ class Dashboard extends Controller
     }
     
     public function index(){
-//        Role::create(['name' => 'auditor']);
+//        Role::create(['name' => 'superagent']);
 //        $user = User::where('id', 1)->first();
-//        $user->assignRole('auditor');
+//        $user->assignRole('admin');
         if(Auth::user()->hasRole('admin')){
             return redirect('/products');
         }
@@ -28,7 +28,7 @@ class Dashboard extends Controller
             return redirect('/storekeeper/products')->with('products');
         }
 
-        if(Auth::user()->hasRole('agent')){
+        if(Auth::user()->hasRole('auditor')){
             return redirect('/audit/storekeepers');
         }
 //        $products = product::count();
