@@ -17,6 +17,9 @@ class Dashboard extends Controller
     }
     
     public function index(){
+//        Role::create(['name' => 'auditor']);
+//        $user = User::where('id', 1)->first();
+//        $user->assignRole('auditor');
         if(Auth::user()->hasRole('admin')){
             return redirect('/products');
         }
