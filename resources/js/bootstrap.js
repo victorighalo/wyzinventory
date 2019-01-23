@@ -8,9 +8,9 @@ window._ = require('lodash');
  */
 
 try {
-    window.Popper = require('popper.js/dist/popper.min');
-    window.$ = window.jQuery = require('jquery/dist/jquery.min');
-    require('bootstrap/dist/js/bootstrap');
+    // window.Popper = require('popper.js/dist/popper.min');
+    // window.$ = window.jQuery = require('jquery/dist/jquery.min');
+    // require('bootstrap/dist/js/bootstrap');
 } catch (e) {}
 
 /**
@@ -55,15 +55,13 @@ let token = document.head.querySelector('meta[name="csrf-token"]');
 // });
 
 //Import other libraries
-window.chart = require('chart.js')
-require('./chart')
+// window.chart = require('chart.js')
+// require('./chart')
 require('./off-canvas')
 require('./misc')
-require('./dashboard')
-require('./maps')
+// require('./dashboard')
+// require('./maps')
 window.PNotify = require('./pnotify.custom.min')
 window.DataTable = require('./jquery.dataTables')
-
-// window.DataTable = require('./dataTables.bootstrap4')
 
 
