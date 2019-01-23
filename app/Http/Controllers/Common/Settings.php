@@ -10,6 +10,12 @@ use Yajra\Datatables\Datatables;
 class Settings extends Controller
 {
 
+    public function __construct()
+    {
+        $this->middleware(['auth','role:auditor|admin']);
+    }
+
+
     public function loadCities($id)
     {
         return DB::table('cities')->where('state_id', $id)->get();
