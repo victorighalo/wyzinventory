@@ -40,7 +40,7 @@ class Clerks extends Controller
         })
             ->addColumn('action', function ($data) {
                 return '<td>
-                    <button  class="btn btn-primary btn-sm editcard" id="'.$data->id.'" data-product_id="'.$data->product_id.'" type="button" data-toggle="modal" data-target="#emodal"> Edit Card </button>
+                    <button  class="btn btn-primary btn-sm editcard" id="'.$data->id.'" data-product_id="'.$data->product_id.'" type="button"> Edit Card </button>
             
                         </td>';
             }) ->editColumn('mfd_date', function($product) {
