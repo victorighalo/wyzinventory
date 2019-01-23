@@ -29,18 +29,7 @@
                     <img class="menu-icon" src="{{asset('images/menu_icons/01.png')}}" alt="menu icon"><span class="menu-title">Permissions</span></a>
             </li>
         @endif
-        @if(Auth::check())
-        <li class="nav-item purchase-button d-xs-block d-none">
-            {{--<a class="nav-link" href="{{ route('logout') }}"--}}
-               {{--onclick="event.preventDefault();--}}
-               {{--document.getElementById('logout-form').submit();">--}}
-                {{--{{ __('Logout') }}--}}
-            {{--</a>--}}
-            {{--<form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">--}}
-                {{--@csrf--}}
-            {{--</form>--}}
-        </li>
-            @endif
+
 
         @if(Auth::user()->hasRole('superagent'))
             <li class="nav-item"><a class="nav-link" href="{{url('storekeeper/products')}}">
@@ -56,6 +45,18 @@
                     <img class="menu-icon" src="{{asset('images/menu_icons/01.png')}}" alt="menu icon"><span class="menu-title">Permissions</span></a>
             </li>
             @endif
+
+            <li class="nav-item purchase-button d-xs-block d-sm-none">
+                <a class="nav-link" href="{{ route('logout') }}"
+                   onclick="event.preventDefault();
+               document.getElementById('logout-form').submit();">
+                    {{ __('Logout') }}
+                </a>
+                <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                    @csrf
+                </form>
+            </li>
+
     </ul>
         @endif
 </nav>
