@@ -14,7 +14,7 @@
                                     <tr>
                                         <th>Name</th>
                                         <th>Email</th>
-                                        <th>Edit</th>
+                                        <th>Edit (Permission)</th>
                                     </tr>
                                     </thead>
                                 </table>
