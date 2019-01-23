@@ -7,7 +7,7 @@
                 <div class="col-12 grid-margin mt-5">
                     <div class="card">
                         <div class="card-body">
-                            <h5 class="card-title mb-4">Stock records for <span class="font-weight-bold">{{$data->name}}</span></h5>
+                            <h5 class="card-title mb-4">Stock records for <span class="font-weight-bold">{{$data->firstname}}</span></h5>
                             <div class="table-responsive">
                                 <table class="table table-bordered" id="users-table">
                                     <thead>
