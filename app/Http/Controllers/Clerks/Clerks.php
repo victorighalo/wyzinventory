@@ -34,16 +34,15 @@ class Clerks extends Controller
 
     public function stockCardData($product_id){
         $data = stockcard::clerkCard(Auth::id())->productCard($product_id)->get();
+
         return Datatables::of($data)->editColumn('created_at', function ($data) {
             return $data->created_at ? with(new Carbon($data->created_at))->toDayDateTimeString() : '';
         })
             ->addColumn('action', function ($data) {
                 return '<td>
-                    <button  class="btn btn-primary btn-sm editcard" id="'.$data->id.'" type="button" data-toggle="modal" data-target="#emodal"> Edit Card </button>
+                    <button  class="btn btn-primary btn-sm editcard" id="'.$data->id.'" data-product_id="'.$data->product_id.'" type="button" data-toggle="modal" data-target="#emodal"> Edit Card </button>
             
                         </td>';
-            }) ->editColumn('active', function($product) {
-                return $product->active ? 'Available' : 'Out of stock';
             }) ->editColumn('mfd_date', function($product) {
                 return Carbon::parse($product->mfd_date)->format('Y-m-d');
             }) ->editColumn('exp_date', function($product) {

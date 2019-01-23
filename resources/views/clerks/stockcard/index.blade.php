@@ -18,7 +18,8 @@
                         <div class="collapse" id="form_collapse">
                             <form id="create_super_agent">
                                 @csrf
-                                <input type="hidden" name="product_id" value="{{$product->id}}">
+                                <p>{{$product->id}}</p>
+                                <input type="hidden" name="product_code" value="{{$product->id}}">
                                 <div class="row form-group">
                                     <div class="col-sm-4">
                                         <label for="description">{{ __('Description') }}</label>
@@ -184,6 +185,7 @@
                 <div class="modal-body">
                     <form name="editcardform">
                         <input type="hidden" name="product_id">
+                        <input type="hidden" name="card_id">
                         <div class="row form-group">
                             <div class="col-sm-12">
                         <label for="">Description</label>
@@ -245,7 +247,8 @@
 
         $('#users-table').on( 'draw.dt', function () {
             $('.editcard').on('click', function (e) {
-                $("input[name='product_id']").val($(this).attr('id'))
+                $("input[name='card_id']").val($(this).attr('id'))
+                $("input[name='product_id']").val($(this).data('product_id'))
                 $.each($(this).parent().parent().children(), function(index, item){
                     // console.log(index, item)
                     if(index == 1){
@@ -268,62 +271,68 @@
                 })
             });
 
-            $('.update_card').on('click', function (e) {
-                disableItem($(".update_card"), true)
-                $(".update_card > .process_indicator").removeClass('off');
-
-                $.ajax({
-                    type: "POST",
-                    url: baseurl+'product/stock/update',
-                    data: $("form[name='editcardform']").serialize()
-                }).done(function (data) {
-                    $('#emodal').modal('hide')
-                    superagentstable.ajax.reload();
-                    disableItem($(".submitformbtn"), false)
-                    $(".submitformbtn > .process_indicator").addClass('off');
-                    new PNotify({
-                        title: 'Success!',
-                        text: 'Stock record created.',
-                        type: 'success'
-                    });
-                }).fail(function (response) {
-                    disableItem($(".submitformbtn"), false)
-                    $(".submitformbtn > .process_indicator").addClass('off');
-                    if (response.status == 500) {
-                        new PNotify({
-                            title: 'Oops!',
-                            text: 'An Error Occurred. Please try again.',
-                            type: 'error'
-                        });
-                        return false;
-                    }
-                    if (response.status == 400) {
-                        $.each(response.responseJSON.message, function (key, item) {
-                            $("input[name="+key+"] + span.errorshow").html(item[0])
-                            $("input[name="+key+"] + span.errorshow").slideDown("slow")
-                        });
-                        new PNotify({
-                            title: 'Oops!',
-                            text: 'Form validation error.',
-                            type: 'error'
-                        });
-                        return false;
-                    }
-                    else {
-                        new PNotify({
-                            title: 'Oops!',
-                            text: 'An Error Occurred. Please try again.',
-                            type: 'error'
-                        });
-                    }
-                })
-            });
-
         })
+
+        $('.update_card').on('click', function (e) {
+            disableItem($(".update_card"), true)
+            $(".update_card > .process_indicator").removeClass('off');
+            $.ajax({
+                type: "POST",
+                url: baseurl+'product/stock/update',
+                data: $("form[name='editcardform']").serialize()
+            }).done(function (data) {
+                $('#emodal, .modal-backdrop').toggle()
+                disableItem($(".update_card"), false)
+                $(".update_card > .process_indicator").addClass('off');
+                superagentstable.ajax.reload();
+                disableItem($(".submitformbtn"), false)
+                $(".submitformbtn > .process_indicator").addClass('off');
+                new PNotify({
+                    title: 'Success!',
+                    text: 'Stock record updated.',
+                    type: 'success'
+                });
+                return false;
+            }).fail(function (response) {
+                $('#emodal, .modal-backdrop').toggle()
+                disableItem($(".update_card"), false)
+                $(".update_card > .process_indicator").addClass('off');
+                $(".submitformbtn > .process_indicator").addClass('off');
+                if (response.status == 500) {
+                    new PNotify({
+                        title: 'Oops!',
+                        text: 'An Error Occurred. Please try again.',
+                        type: 'error'
+                    });
+                    return false;
+                }
+                if (response.status == 400) {
+                    $.each(response.responseJSON.message, function (key, item) {
+                        $("input[name="+key+"] + span.errorshow").html(item[0])
+                        $("input[name="+key+"] + span.errorshow").slideDown("slow")
+                    });
+                    new PNotify({
+                        title: 'Oops!',
+                        text: 'Form validation error.',
+                        type: 'error'
+                    });
+                    return false;
+                }
+                else {
+                    new PNotify({
+                        title: 'Oops!',
+                        text: 'An Error Occurred. Please try again.',
+                        type: 'error'
+                    });
+                    return false
+                }
+            })
+        });
 
     var baseurl = "<?php echo config('app.url') ?>"
     var stateid;
-    var product_id = "<?php  $linkcount = count(explode('/',url()->current())); echo explode('/',url()->current())[$linkcount-2] ?>"
+    var product_id = "<?php echo $product->id ?>"
+
     $(document).ready(function () {
 
         $("form#create_super_agent").on('submit', function (e) {

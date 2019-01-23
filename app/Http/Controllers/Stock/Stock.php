@@ -26,7 +26,7 @@ class Stock extends Controller
         return Validator::make($data->all(), [
             'qtyreceived' => ['required','numeric'],
             'qtyout' => ['required','numeric'],
-            'product_id' => ['required']
+            'product_code' => ['required']
         ]);
     }
 
@@ -39,7 +39,7 @@ class Stock extends Controller
         }
 
         try {
-            $currbal = stockcard::currentBalance(Auth::id(), $request->product_id);
+            $currbal = stockcard::currentBalance(Auth::id(), $request->product_code);
             $newbalance = ($currbal->currentbalance + $request->qtyreceived) - $request->qtyout;
         }catch (\Exception $e){
             $newbalance = $request->qtyreceived;
@@ -55,7 +55,7 @@ class Stock extends Controller
             'mfd_date' => $request->mfd_date,
             'exp_date' => $request->exp_date,
             'remark' => $request->remark,
-            'product_id' => $request->product_id,
+            'product_id' => $request->product_code,
             'user_id' => Auth::id(),
         ]);
 
@@ -63,32 +63,25 @@ class Stock extends Controller
     }
 
     public function update(Request $request){
-
-//        $validator = $this->validator($request);
         $newbalance = null;
-//        if($validator->fails()){
-//            return response()->json(['message' => $validator->errors()], 400);
-//        }
-
         try {
-            $currbal = stockcard::currentBalance(Auth::id(), $request->product_id);
-            $newbalance = ($currbal->currentbalance + $request->qtyreceived) - $request->qtyout;
+            $currbal = stockcard::currentBalance(Auth::id(), $request->product_id)->currentbalance;
+            $newbalance = ($currbal + $request->qtyreceived) - $request->qtyout;
         }catch (\Exception $e){
             $newbalance = $request->qtyreceived;
         }
-        $stock = stockcard::where('id' ,$request->product_id)->first();
-         $stock->fill([
-            'description' => $request->description,
-            'qtyreceived' => $request->qtyreceived,
-            'qtyout' => $request->qtyout,
-            'invoiceno' => $request->invoiceno,
-            'bacthno' => $request->bacthno,
+
+        $stock = stockcard::where('id' ,$request->card_id)->first();
+         $stock->update([
+            'description' => $request->edit_description,
+            'qtyreceived' => $request->edit_qtyreceived,
+            'qtyout' => $request->edit_qtyout,
+            'invoiceno' => $request->edit_invoiceno,
+            'bacthno' => $request->edit_bacthno,
             'currentbalance' => $newbalance,
-            'mfd_date' => $request->mfd_date,
-            'exp_date' => $request->exp_date,
-            'remark' => $request->remark,
-            'product_id' => $request->product_id,
-            'user_id' => Auth::id(),
+            'mfd_date' => $request->edit_mfd_date,
+            'exp_date' => $request->edit_exp_date,
+            'remark' => $request->edit_remark
         ]);
 
         return response()->json(['data' => $stock], 200);
