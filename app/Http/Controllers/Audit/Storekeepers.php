@@ -39,7 +39,9 @@ class Storekeepers extends Controller
         })
             ->addColumn('action', function ($data) use($user_id) {
                 return '<td>
-                    <button  class="btn btn-primary btn-sm" type="button" id="settingcol"><a  class="text-white" href="'.route('get_storekeepers_stock_audittrail',['product_id' => $data->product_id, 'user_id' => $user_id]).'"> Audit trail </a></button>
+<a  class="text-white" href="'.route('get_storekeepers_stock_audittrail',['product_id' => $data->product_id, 'user_id' => $user_id]).'"> 
+                    <button  class="btn btn-primary btn-sm" type="button" id="settingcol">Audit trail </button>
+                    </a>
                         </td>';
             }) ->addColumn('productname', function($data) {
                 return product::where('id', $data->product_id)->select('name')->first()->name;
