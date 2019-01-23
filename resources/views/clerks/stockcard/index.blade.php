@@ -33,7 +33,7 @@
 
                                     <div class="col-sm-2">
                                         <label for="qtyreceived">{{ __('Qty Received In') }}</label>
-                                        <input type="number" id="qtyreceived" class="form-control{{ $errors->has('qtyreceived') ? ' is-invalid' : '' }}" name="qtyreceived" value="{{ old('qtyreceived') }}" required>
+                                        <input type="number" id="qtyreceived" class="form-control" name="qtyreceived" value="0" required>
                                         @if ($errors->has('qtyreceived'))
                                             <span class="invalid-feedback" role="alert">
                                         <strong>{{ $errors->first('qtyreceived') }}</strong>
@@ -45,7 +45,7 @@
 
                                     <div class="col-sm-2">
                                         <label for="qtyout">{{ __('Qty Issued Out') }}</label>
-                                        <input type="number" id="qtyout" class="form-control" name="qtyout" required>
+                                        <input type="number" id="qtyout" class="form-control" name="qtyout" value="0" required>
                                         @if ($errors->has('qtyout'))
                                             <span class="invalid-feedback" role="alert">
                                         <strong>{{ $errors->first('qtyout') }}</strong>
