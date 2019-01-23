@@ -6,8 +6,15 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use DB;
 use App\User;
+use Yajra\Datatables\Datatables;
 class Settings extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware(['auth','role:auditor|admin']);
+    }
+
 
     public function loadCities($id)
     {
@@ -46,6 +53,57 @@ class Settings extends Controller
         } catch (\Exception $e) {
             return response()->json(['message' => 'Failed to Activate Account'], 400);
         }
+    }
+
+    public function permissions(){
+        return view('common/permission.index');
+    }
+
+    public function permissionsRevoke($user_id){
+        try {
+            $user = User::where('id', $user_id)->first();
+            $user->removeRole('editor');
+            return response()->json(['message' => $user->hasRole('editor')], 200);
+       }catch (\Exception $e)
+        {
+            return response()->json(['message' => 'Failed to Revoke Permission'], 400);
+        }
+    }
+
+    public function permissionsGrant($user_id){
+        try {
+            $user = User::where('id', $user_id)->first();
+            $user->assignRole('editor');
+            return response()->json(['message' => $user->hasRole('editor')], 200);
+        }catch (\Exception $e)
+        {
+            return response()->json(['message' => 'Failed to Grant Permission'], 400);
+        }
+    }
+
+    public function getSuperAgentsAndPermission(Request $request)
+    {
+        $superagents = User::role('superagent')->get();
+        return Datatables::of($superagents)
+            ->addColumn('action', function ($superagents) {
+                        if( $superagents->can("edit cards") ){
+                                return '<td><button class="btn btn-danger btn-sm" onclick="revoke('.$superagents->id.')" type="button"> 
+                                Revoke
+                                </button></td>';
+                                }else{
+                                 return '<td><button class="btn btn-primary btn-sm" onclick="grant('.$superagents->id.')" type="button"> 
+                                Grant
+                                </button></td>';
+                                }
+                             ;
+            })  ->addColumn('active', function ($superagents) {
+                if($superagents->active){
+                    return "Active";
+                }else{
+                    return "Deactivated";
+                }
+            })
+            ->make(true);
     }
 
 }

@@ -7,23 +7,14 @@
                 <div class="col-12 grid-margin mt-5">
                     <div class="card">
                         <div class="card-body">
-                            <h5 class="card-title mb-4">Stock records for <span class="font-weight-bold">{{$data->firstname}}</span></h5>
+                            <h5 class="card-title mb-4">Grant Permissions to Store keepers</h5>
                             <div class="table-responsive">
                                 <table class="table table-bordered" id="users-table">
                                     <thead>
                                     <tr>
-                                        <th>Date</th>
-                                        <th>Product</th>
-                                        <th>Description</th>
-                                        <th>Qty Received</th>
-                                        <th>Qty Issued Out</th>
-                                        <th>Current balance</th>
-                                        <th>Invoice no</th>
-                                        <th>Bacth no</th>
-                                        <th>MFD date</th>
-                                        <th>EXP date</th>
-                                        <th>Remark</th>
-                                        {{--<th>Audit</th>--}}
+                                        <th>Name</th>
+                                        <th>Email</th>
+                                        <th>Edit (Permission)</th>
                                     </tr>
                                     </thead>
                                 </table>
@@ -39,13 +30,9 @@
 @endsection
 
 @push('script')
-    {{--<script src="{{asset('js/dataTables.buttons.min.js')}}"></script>--}}
-    <script type="text/javascript" src="https://cdn.datatables.net/r/dt/jq-2.1.4,jszip-2.5.0,pdfmake-0.1.18,dt-1.10.9,af-2.0.0,b-1.0.3,b-colvis-1.0.3,b-html5-1.0.3,b-print-1.0.3,se-1.0.1/datatables.min.js"></script>
-
     <script>
         var baseurl = "<?php echo config('app.url') ?>"
         var stateid;
-        var user_id = "<?php  $linkcount = count(explode('/',url()->current())); echo explode('/',url()->current())[$linkcount-1] ?>"
 
         $(document).ready(function () {
             $("form#create_super_agent").on('submit', function (e) {
@@ -101,59 +88,36 @@
         var superagentstable = $('#users-table').DataTable({
             processing: true,
             serverSide: true,
-            ajax: '{!! route('get_storekeepers_stock_data_audit') !!}/'+user_id,
+            ajax: '{!! route('get_storekeepers_data_permissions') !!}',
             columns: [
-                { data: 'created_at', name: 'created_at' },
-                { data: 'productname', name: 'productname' },
-                { data: 'description', name: 'description' },
-                { data: 'qtyreceived', name: 'qtyreceived' },
-                { data: 'qtyout', name: 'qtyout' },
-                { data: 'currentbalance', name: 'currentbalance' },
-                { data: 'invoiceno', name: 'invoiceno' },
-                { data: 'bacthno', name: 'bacthno' },
-                { data: 'mfd_date', name: 'mfd_date' },
-                { data: 'exp_date', name: 'exp_date' },
-                { data: 'remark', name: 'remark' },
-                // {data: 'action', name: 'action', orderable: false, searchable: false}
-            ],
-            "dom": 'lBrtip',
-            "buttons": [
-                {
-                    extend: 'collection',
-                    text: 'Export',
-                    buttons: [
-                        'copy',
-                        'excel',
-                        'csv',
-                        'pdf',
-                        'print'
-                    ]
-                }
+                { data: 'firstname', name: 'firstname' },
+                { data: 'email', name: 'email' },
+                {data: 'action', name: 'action', orderable: false, searchable: false}
             ]
         });
 
 
-        function deactivate (id) {
+        function revoke (id) {
             PNotify.removeAll();
 
             new PNotify({
-                title: 'Confirm Deactivation',
+                title: 'Confirm Revoke',
                 text: 'Are you sure?',
                 icon: 'glyphicon glyphicon-question-sign',
                 hide: false,
                 confirm: {
                     confirm: true,
                     buttons: [{
-                        text: 'Deactivate',
+                        text: 'Revoke',
                         addClass: 'btn-primary',
                         click: function(notice) {
                             $.ajax({
                                 type: "GET",
-                                url: baseurl+'products/deactivate/'+id,
+                                url: baseurl+'permissions/edit/revoke/'+id,
                             }).done(function (data) {
                                 notice.update({
-                                    title: 'Product deactivated',
-                                    text: 'Deactivation successful.',
+                                    title: 'Permission revoked',
+                                    text: 'Action successful.',
                                     icon: true,
                                     type: 'success',
                                     hide: true,
@@ -226,26 +190,26 @@
             })
         };
 
-        function activate (id) {
+        function grant (id) {
             (new PNotify({
-                title: 'Confirm Activation',
+                title: 'Confirm Grant',
                 text: 'Are you sure?',
                 icon: 'glyphicon glyphicon-question-sign',
                 hide: false,
                 confirm: {
                     confirm: true,
                     buttons: [{
-                        text: 'Activate',
+                        text: 'Grant',
                         addClass: 'btn-primary',
                         click: function(notice) {
                             $.ajax({
                                 type: "GET",
-                                url: baseurl+'products/activate/'+id,
+                                url: baseurl+'permissions/edit/grant/'+id,
                             }).done(function (data) {
                                 superagentstable.ajax.reload();
                                 notice.update({
-                                    title: 'Product Activated',
-                                    text: 'Activation successful.',
+                                    title: 'Grant edit permission',
+                                    text: 'Action successful.',
                                     icon: true,
                                     type: 'success',
                                     hide: true,
@@ -318,93 +282,5 @@
             }))
         };
 
-        function remove (id){
-            (new PNotify({
-                title: 'Confirm Delete',
-                text: 'Are you sure?',
-                icon: 'glyphicon glyphicon-question-sign',
-                hide: false,
-                confirm: {
-                    confirm: true,
-                    buttons: [{
-                        text: 'Delete',
-                        addClass: 'btn-primary',
-                        click: function(notice) {
-                            $.ajax({
-                                type: "GET",
-                                url: baseurl+'products/delete/'+id,
-                                data: $(this).serialize()
-                            }).done(function (data) {
-                                superagentstable.ajax.reload();
-                                notice.update({
-                                    title: 'Product Deleted',
-                                    text: data,
-                                    icon: true,
-                                    type: 'success',
-                                    hide: true,
-                                    confirm: {
-                                        confirm: false
-                                    },
-                                    buttons: {
-                                        closer: true,
-                                        sticker: true
-                                    }
-                                });
-                            }).fail(function (response) {
-                                if (response.status == 500) {
-                                    new PNotify({
-                                        title: 'Oops!',
-                                        text: 'An Error Occurred. Please try again.',
-                                        type: 'error'
-                                    });
-                                }
-                                if (response.status == 400) {
-                                    new PNotify({
-                                        title: 'Oops!',
-                                        text: 'Failed to delete Super Agent.',
-                                        type: 'error'
-                                    });
-                                }
-                                else {
-                                    new PNotify({
-                                        title: 'Oops!',
-                                        text: 'An Error Occurred. Please try again.',
-                                        type: 'error'
-                                    });
-                                }
-                            })
-
-                        }
-                    },
-                        {
-                            text: 'Cancel',
-                            addClass: 'btn-primary',
-                            click: function(notice) {
-                                notice.update({
-                                    title: 'Action Cancelled',
-                                    text: 'That was close...',
-                                    icon: true,
-                                    type: 'danger',
-                                    hide: true,
-                                    confirm: {
-                                        confirm: false
-                                    },
-                                    buttons: {
-                                        closer: true,
-                                        sticker: true
-                                    }
-                                });
-                            }
-                        }]
-                },
-                buttons: {
-                    closer: true,
-                    sticker: true
-                },
-                history: {
-                    history: false
-                }
-            }))
-        };
     </script>
 @endpush

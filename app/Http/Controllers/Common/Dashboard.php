@@ -20,6 +20,7 @@ class Dashboard extends Controller
 //        Role::create(['name' => 'superagent']);
 //        $user = User::where('id', 1)->first();
 //        $user->assignRole('admin');
+
         if(Auth::user()->hasRole('admin')){
             return redirect('/products');
         }

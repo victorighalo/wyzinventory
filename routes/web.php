@@ -63,5 +63,12 @@ Route::get('audit/storekeepers/stock/{user_id?}','Audit\Storekeepers@getSuperAge
 Route::get('audit/storekeepers/{user_id}/stock/{product_id}/audittrail','Audit\Storekeepers@getSuperAgentsStockAuditTrail')->name('get_storekeepers_stock_audittrail');
 Route::get('audit/storekeepers/stock/data/{user_id?}','Audit\Storekeepers@getSuperAgentsStockData')->name('get_storekeepers_stock_data_audit');
 
+
+//Permissions
+Route::get('permissions', 'Common\Settings@permissions');
+Route::get('permissions/edit/revoke/{id?}', 'Common\Settings@permissionsRevoke');
+Route::get('permissions/edit/grant/{id?}', 'Common\Settings@permissionsGrant');
+Route::get('storekeepers/permissions','Common\Settings@getSuperAgentsAndPermission')->name('get_storekeepers_data_permissions');
+
 Auth::routes();
 
