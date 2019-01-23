@@ -53,6 +53,7 @@ Route::get('storekeeper/products','Clerks\Clerks@index');
 Route::get('product/{product_id}/stockcard', 'Clerks\Clerks@stockCard')->name('product_stock_link');
 Route::get('product/stockcarddata/{product_id?}', 'Clerks\Clerks@stockCardData')->name('product_stock_data');
 Route::post('product/stock/create', 'Stock\Stock@addStock')->name('create_stock_record');
+Route::post('product/stock/update', 'Stock\Stock@update')->name('update_stock_record');
 
 
 //Audit

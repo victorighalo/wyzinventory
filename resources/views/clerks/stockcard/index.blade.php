@@ -1,5 +1,6 @@
 @extends('layouts.main')
 @section('content')
+    @include('partials.editcardmodal')
 <div class="main-panel">
     <div class="content-wrapper">
 
@@ -33,7 +34,7 @@
 
                                     <div class="col-sm-2">
                                         <label for="qtyreceived">{{ __('Qty Received In') }}</label>
-                                        <input type="number" id="qtyreceived" class="form-control" name="qtyreceived" value="0" required>
+                                        <input type="number" id="qtyreceived" class="form-control" value="0" name="qtyreceived" value="{{ old('qtyreceived') }}" required>
                                         @if ($errors->has('qtyreceived'))
                                             <span class="invalid-feedback" role="alert">
                                         <strong>{{ $errors->first('qtyreceived') }}</strong>
@@ -157,6 +158,7 @@
                                     <th>MFD date</th>
                                     <th>EXP date</th>
                                     <th>Remark</th>
+                                    <th>Action</th>
 
                                 </tr>
                                 </thead>
@@ -170,14 +172,160 @@
     </div>
     @include('partials.footer')
 </div>
+    <div class="modal fade" id="emodal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">Edit card</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form name="editcardform">
+                        <input type="hidden" name="product_id">
+                        <div class="row form-group">
+                            <div class="col-sm-12">
+                        <label for="">Description</label>
+                        <input type="text" name="edit_description" value="" class="form-control">
+                            </div>
+                        </div>
+                        <div class="row form-group">
+                            <div class="col-sm-3">
+                        <label for="">Qty Received</label>
+                        <input type="number" name="edit_qtyreceived" value="" class="form-control">
+                            </div>
+                            <div class="col-sm-3">
+                        <label for="">Qty Issued Out</label>
+                        <input type="number" name="edit_qtyout" value="" class="form-control">
+                            </div>
+                            <div class="col-sm-3">
+                        <label for="">Invoice no</label>
+                        <input type="number" name="edit_invoiceno" value="" class="form-control">
+                            </div>
+                            <div class="col-sm-3">
+                        <label for="">Bacth no</label>
+                        <input type="number" name="edit_bacthno" value="" class="form-control">
+                            </div>
+                        </div>
+                        <div class="row form-group">
+                            <div class="col-sm-6">
+                        <label for="">Exp date</label>
+                        <input type="date" value="" name="edit_mfd_date" class="form-control">
+                            </div>
+                            <div class="col-sm-6">
+                        <label for="">MFD date</label>
+                        <input type="date" value="" name="edit_exp_date" class="form-control">
+                            </div>
+                            <div class="col-sm-12 mt-3">
+                        <label for="">Remark</label>
+                        <input type="text" value="" name="edit_remark" class="form-control">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary update_card"><i class="fas fa-spinner fa-spin off process_indicator"></i> Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 
 @push('script')
-<script>
+    <script type="text/javascript" src="https://cdn.datatables.net/r/dt/jq-2.1.4,jszip-2.5.0,pdfmake-0.1.18,dt-1.10.9,af-2.0.0,b-1.0.3,b-colvis-1.0.3,b-html5-1.0.3,b-print-1.0.3,se-1.0.1/datatables.min.js"></script>
+
+    <script>
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+
+        $('#users-table').on( 'draw.dt', function () {
+            $('.editcard').on('click', function (e) {
+                $("input[name='product_id']").val($(this).attr('id'))
+                $.each($(this).parent().parent().children(), function(index, item){
+                    // console.log(index, item)
+                    if(index == 1){
+                        $("input[name='edit_description']").val(item.innerText).html(item.innerText)
+                    }if(index == 2){
+                        $("input[name='edit_qtyreceived']").val(item.innerText).html(item.innerText)
+                    }if(index == 3){
+                        $("input[name='edit_qtyout']").val(item.innerText).html(item.innerText)
+                    }if(index == 5){
+                        $("input[name='edit_invoiceno']").val(item.innerText).html(item.innerText)
+                    }if(index == 6){
+                        $("input[name='edit_bacthno']").val(item.innerText).html(item.innerText)
+                    }if(index == 7){
+                        $("input[name='edit_mfd_date']").val(item.innerText).html(item.innerText)
+                    }if(index == 8){
+                        $("input[name='edit_exp_date']").val(item.innerText).html(item.innerText)
+                    }if(index == 9){
+                        $("input[name='edit_remark']").val(item.innerText).html(item.innerText)
+                    }
+                })
+            });
+
+            $('.update_card').on('click', function (e) {
+                disableItem($(".update_card"), true)
+                $(".update_card > .process_indicator").removeClass('off');
+
+                $.ajax({
+                    type: "POST",
+                    url: baseurl+'product/stock/update',
+                    data: $("form[name='editcardform']").serialize()
+                }).done(function (data) {
+                    $('#emodal').modal('hide')
+                    superagentstable.ajax.reload();
+                    disableItem($(".submitformbtn"), false)
+                    $(".submitformbtn > .process_indicator").addClass('off');
+                    new PNotify({
+                        title: 'Success!',
+                        text: 'Stock record created.',
+                        type: 'success'
+                    });
+                }).fail(function (response) {
+                    disableItem($(".submitformbtn"), false)
+                    $(".submitformbtn > .process_indicator").addClass('off');
+                    if (response.status == 500) {
+                        new PNotify({
+                            title: 'Oops!',
+                            text: 'An Error Occurred. Please try again.',
+                            type: 'error'
+                        });
+                        return false;
+                    }
+                    if (response.status == 400) {
+                        $.each(response.responseJSON.message, function (key, item) {
+                            $("input[name="+key+"] + span.errorshow").html(item[0])
+                            $("input[name="+key+"] + span.errorshow").slideDown("slow")
+                        });
+                        new PNotify({
+                            title: 'Oops!',
+                            text: 'Form validation error.',
+                            type: 'error'
+                        });
+                        return false;
+                    }
+                    else {
+                        new PNotify({
+                            title: 'Oops!',
+                            text: 'An Error Occurred. Please try again.',
+                            type: 'error'
+                        });
+                    }
+                })
+            });
+
+        })
+
     var baseurl = "<?php echo config('app.url') ?>"
     var stateid;
     var product_id = "<?php  $linkcount = count(explode('/',url()->current())); echo explode('/',url()->current())[$linkcount-2] ?>"
     $(document).ready(function () {
+
         $("form#create_super_agent").on('submit', function (e) {
             e.preventDefault();
             disableItem($(".submitformbtn"), true)
@@ -205,6 +353,7 @@
                         text: 'An Error Occurred. Please try again.',
                         type: 'error'
                     });
+                    return false;
                 }
                 if (response.status == 400) {
                     $.each(response.responseJSON.message, function (key, item) {
@@ -216,6 +365,7 @@
                         text: 'Form validation error.',
                         type: 'error'
                     });
+                    return false;
                 }
                 else {
                     new PNotify({
@@ -226,6 +376,8 @@
                 }
             })
         });
+
+
     });
 
     var superagentstable = $('#users-table').DataTable({
@@ -242,8 +394,24 @@
     { data: 'bacthno', name: 'bacthno' },
     { data: 'mfd_date', name: 'mfd_date' },
     { data: 'exp_date', name: 'exp_date' },
-    { data: 'remark', name: 'remark' }
-    ]
+    { data: 'remark', name: 'remark' },
+    {data: 'action', name: 'action', orderable: false, searchable: false}
+
+    ],
+        "dom": 'lBrtip',
+        "buttons": [
+            {
+                extend: 'collection',
+                text: 'Export',
+                buttons: [
+                    'copy',
+                    'excel',
+                    'csv',
+                    'pdf',
+                    'print'
+                ]
+            }
+            ]
     });
 
 
@@ -520,5 +688,9 @@
     //         }
     //     }))
     // };
+
+        function triggerModal(){
+
+        }
 </script>
 @endpush
