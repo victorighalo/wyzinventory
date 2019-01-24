@@ -1,9 +1,7 @@
 @extends('layouts.main')
 @section('content')
-    @include('partials.editcardmodal')
 <div class="main-panel">
     <div class="content-wrapper">
-
         <div class="row justify-content-center flex-grow mb-5 mt-5">
             <div class="col-12">
                 <div class="card">
@@ -182,8 +180,9 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
+                <form name="editcardform">
                 <div class="modal-body">
-                    <form name="editcardform">
+
                         <input type="hidden" name="product_id">
                         <input type="hidden" name="card_id">
                         <div class="row form-group">
@@ -224,19 +223,20 @@
                         <input type="text" value="" name="edit_remark" class="form-control">
                             </div>
                         </div>
-                    </form>
+
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary update_card"><i class="fas fa-spinner fa-spin off process_indicator"></i> Save changes</button>
+                    <button type="submit" class="btn btn-primary update_card"><i class="fas fa-spinner fa-spin off process_indicator"></i> Save changes</button>
                 </div>
+                </form>
             </div>
         </div>
     </div>
 @endsection
 
 @push('script')
-    <script type="text/javascript" src="https://cdn.datatables.net/r/dt/jq-2.1.4,jszip-2.5.0,pdfmake-0.1.18,dt-1.10.9,af-2.0.0,b-1.0.3,b-colvis-1.0.3,b-html5-1.0.3,b-print-1.0.3,se-1.0.1/datatables.min.js"></script>
+    {{--<script type="text/javascript" src="https://cdn.datatables.net/r/dt/jq-2.1.4,jszip-2.5.0,b-html5-1.0.3,b-print-1.0.3,se-1.0.1/datatables.min.js"></script>--}}
 
     <script>
         $.ajaxSetup({
@@ -247,6 +247,7 @@
 
         $('#users-table').on( 'draw.dt', function () {
             $('.editcard').on('click', function (e) {
+                $('#emodal').modal()
                 $("input[name='card_id']").val($(this).attr('id'))
                 $("input[name='product_id']").val($(this).data('product_id'))
                 $.each($(this).parent().parent().children(), function(index, item){
@@ -273,60 +274,64 @@
 
         })
 
-        $('.update_card').on('click', function (e) {
-            disableItem($(".update_card"), true)
-            $(".update_card > .process_indicator").removeClass('off');
-            $.ajax({
-                type: "POST",
-                url: baseurl+'product/stock/update',
-                data: $("form[name='editcardform']").serialize()
-            }).done(function (data) {
-                $('#emodal, .modal-backdrop').toggle()
-                disableItem($(".update_card"), false)
-                $(".update_card > .process_indicator").addClass('off');
-                superagentstable.ajax.reload();
-                disableItem($(".submitformbtn"), false)
-                $(".submitformbtn > .process_indicator").addClass('off');
-                new PNotify({
-                    title: 'Success!',
-                    text: 'Stock record updated.',
-                    type: 'success'
-                });
-                return false;
-            }).fail(function (response) {
-                $('#emodal, .modal-backdrop').toggle()
-                disableItem($(".update_card"), false)
-                $(".update_card > .process_indicator").addClass('off');
-                $(".submitformbtn > .process_indicator").addClass('off');
-                if (response.status == 500) {
+        $(document).ready(function () {
+            $("form[name='editcardform']").on('submit', function (e) {
+                e.preventDefault()
+                var formdata = $("form[name='editcardform']").serialize();
+                console.log(formdata)
+
+                disableItem($(".update_card"), true)
+                $(".update_card > .process_indicator").removeClass('off');
+                $.ajax({
+                    type: "POST",
+                    url: baseurl+'product/stock/update',
+                    data: formdata
+                }).done(function (data) {
+                    $('#emodal').modal('hide')
+                    disableItem($(".update_card"), false)
+                    $(".update_card > .process_indicator").addClass('off');
+                    superagentstable.ajax.reload();
                     new PNotify({
-                        title: 'Oops!',
-                        text: 'An Error Occurred. Please try again.',
-                        type: 'error'
+                        title: 'Success!',
+                        text: 'Stock record updated.',
+                        type: 'success'
                     });
-                    return false;
-                }
-                if (response.status == 400) {
-                    $.each(response.responseJSON.message, function (key, item) {
-                        $("input[name="+key+"] + span.errorshow").html(item[0])
-                        $("input[name="+key+"] + span.errorshow").slideDown("slow")
-                    });
-                    new PNotify({
-                        title: 'Oops!',
-                        text: 'Form validation error.',
-                        type: 'error'
-                    });
-                    return false;
-                }
-                else {
-                    new PNotify({
-                        title: 'Oops!',
-                        text: 'An Error Occurred. Please try again.',
-                        type: 'error'
-                    });
-                    return false
-                }
-            })
+                }).fail(function (response) {
+                    $('#emodal').modal('hide')
+                    disableItem($(".update_card"), false)
+                    $(".update_card > .process_indicator").addClass('off');
+                    $(".submitformbtn > .process_indicator").addClass('off');
+                    if (response.status == 500) {
+                        new PNotify({
+                            title: 'Oops!',
+                            text: 'An Error Occurred. Please try again.',
+                            type: 'error'
+                        });
+                        return false;
+                    }
+                    if (response.status == 400) {
+                        $.each(response.responseJSON.message, function (key, item) {
+                            $("input[name="+key+"] + span.errorshow").html(item[0])
+                            $("input[name="+key+"] + span.errorshow").slideDown("slow")
+                        });
+                        new PNotify({
+                            title: 'Oops!',
+                            text: 'Form validation error.',
+                            type: 'error'
+                        });
+                        return false;
+                    }
+                    else {
+                        new PNotify({
+                            title: 'Oops!',
+                            text: 'An Error Occurred. Please try again.',
+                            type: 'error'
+                        });
+                        return false
+                    }
+                })
+            });
+
         });
 
     var baseurl = "<?php echo config('app.url') ?>"
@@ -413,11 +418,7 @@
                 extend: 'collection',
                 text: 'Export',
                 buttons: [
-                    'copy',
-                    'excel',
-                    'csv',
-                    'pdf',
-                    'print'
+                     'excel'
                 ]
             }
             ]

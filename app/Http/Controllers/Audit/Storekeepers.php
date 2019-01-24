@@ -71,10 +71,12 @@ class Storekeepers extends Controller
     }
 
     public function getSuperAgentsStockAuditTrail( $user_id, $product_id){
-        $data = stockcard::clerkCard($user_id)->ProductCard($product_id)->first();
+        $user = User::where('id', $user_id)->select('firstname')->first();
+        $product = product::where('id', $product_id)->select('name')->first();
+        $data = stockcard::ProductCard($product_id)->first();
         $all = $data->audits;
         $data = $all;
 
-        return view('audit.audittrail', compact('data'));
+        return view('audit.audittrail', compact('data', 'user', 'product'));
     }
 }

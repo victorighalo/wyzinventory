@@ -1,7 +1,5 @@
 
 // Fonts
-@import url('https://fonts.googleapis.com/css?family=Nunito');
-@import url("https://fonts.googleapis.com/css?family=Poppins:400,500,600");
 $mdi-font-path: '~mdi/fonts/';
 // Variables
 @import 'variables';
@@ -14,6 +12,7 @@ $mdi-font-path: '~mdi/fonts/';
 @import './datatables.min.css';
 @import './jquery.dataTables.min.css';
 @import './dataTables.bootstrap4.min.css';
+@import './iziModal.min.css';
 
 .off{
   display: none;

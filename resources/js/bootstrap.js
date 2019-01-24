@@ -7,11 +7,11 @@ window._ = require('lodash');
  * code may be modified to fit the specific needs of your application.
  */
 
-try {
+
     window.Popper = require('popper.js/dist/popper.min');
-    window.$ = window.jQuery = require('jquery/dist/jquery.min');
+window.$ = window.jQuery = require('jquery');
     require('bootstrap/dist/js/bootstrap');
-} catch (e) {}
+
 
 /**
  * We'll load the axios HTTP library which allows us to easily issue requests
@@ -55,15 +55,13 @@ let token = document.head.querySelector('meta[name="csrf-token"]');
 // });
 
 //Import other libraries
-window.chart = require('chart.js')
-require('./chart')
+// window.chart = require('chart.js')
+// require('./chart')
 require('./off-canvas')
 require('./misc')
-require('./dashboard')
-require('./maps')
+// require('./dashboard')
+// require('./maps')
 window.PNotify = require('./pnotify.custom.min')
-window.DataTable = require('./jquery.dataTables')
-
-// window.DataTable = require('./dataTables.bootstrap4')
+// window.DataTable = require('./jquery.dataTables')
 
 
