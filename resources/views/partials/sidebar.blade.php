@@ -25,9 +25,9 @@
             <li class="nav-item"><a class="nav-link" href="{{url('audit/storekeepers')}}">
                 <img class="menu-icon" src="{{asset('images/menu_icons/01.png')}}" alt="menu icon"><span class="menu-title">Audit Store keepers</span></a>
         </li>
-            <li class="nav-item"><a class="nav-link" href="{{url('permissions')}}">
-                    <img class="menu-icon" src="{{asset('images/menu_icons/01.png')}}" alt="menu icon"><span class="menu-title">Permissions</span></a>
-            </li>
+            {{--<li class="nav-item"><a class="nav-link" href="{{url('permissions')}}">--}}
+                    {{--<img class="menu-icon" src="{{asset('images/menu_icons/01.png')}}" alt="menu icon"><span class="menu-title">Permissions</span></a>--}}
+            {{--</li>--}}
         @endif
 
 
@@ -41,9 +41,9 @@
             <li class="nav-item"><a class="nav-link" href="{{url('audit/storekeepers')}}">
                     <img class="menu-icon" src="{{asset('images/menu_icons/01.png')}}" alt="menu icon"><span class="menu-title">Audit Store keepers</span></a>
             </li>
-            <li class="nav-item"><a class="nav-link" href="{{url('permissions')}}">
-                    <img class="menu-icon" src="{{asset('images/menu_icons/01.png')}}" alt="menu icon"><span class="menu-title">Permissions</span></a>
-            </li>
+            {{--<li class="nav-item"><a class="nav-link" href="{{url('permissions')}}">--}}
+                    {{--<img class="menu-icon" src="{{asset('images/menu_icons/01.png')}}" alt="menu icon"><span class="menu-title">Permissions</span></a>--}}
+            {{--</li>--}}
             @endif
 
             <li class="nav-item purchase-button d-xs-block d-sm-none">

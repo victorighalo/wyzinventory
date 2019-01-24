@@ -418,7 +418,8 @@
                 extend: 'collection',
                 text: 'Export',
                 buttons: [
-                     'excel'
+                     'excel',
+                    'copy'
                 ]
             }
             ]
