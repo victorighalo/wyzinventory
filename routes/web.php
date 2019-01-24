@@ -56,12 +56,15 @@ Route::post('product/stock/create', 'Stock\Stock@addStock')->name('create_stock_
 Route::post('product/stock/update', 'Stock\Stock@update')->name('update_stock_record');
 
 
-//Audit
+//Auditor
 Route::get('audit/storekeepers', 'Audit\Storekeepers@index');
 Route::get('audit/storekeepers/data','Audit\Storekeepers@getSuperAgents')->name('get_storekeepers_data_audit');
 Route::get('audit/storekeepers/stock/{user_id?}','Audit\Storekeepers@getSuperAgentsStock')->name('get_storekeepers_stock');
 Route::get('audit/storekeepers/{user_id}/stock/{product_id}/audittrail','Audit\Storekeepers@getSuperAgentsStockAuditTrail')->name('get_storekeepers_stock_audittrail');
 Route::get('audit/storekeepers/stock/data/{user_id?}','Audit\Storekeepers@getSuperAgentsStockData')->name('get_storekeepers_stock_data_audit');
+Route::get('get_superagents','Audit\Audit@getAuditors')->name('get_auditors');
+Route::get('auditors','Audit\Audit@index');
+Route::post('auditor/create', 'Audit\Audit@create');
 
 
 //Permissions
