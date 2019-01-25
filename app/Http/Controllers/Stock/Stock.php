@@ -18,7 +18,7 @@ class Stock extends Controller
 {
     public function __construct()
     {
-        $this->middleware(['auth','role:superagent|admin']);
+        $this->middleware(['auth','role:auditor|admin']);
     }
 
     protected function validator(Request $data)
@@ -63,13 +63,12 @@ class Stock extends Controller
     }
 
     public function update(Request $request){
-        $newbalance = null;
-        try {
-            $currbal = stockcard::currentBalance(Auth::id(), $request->product_id)->currentbalance;
-            $newbalance = ($currbal + $request->qtyreceived) - $request->qtyout;
-        }catch (\Exception $e){
-            $newbalance = $request->qtyreceived;
-        }
+
+        $current_qtyreceived = stockcard::currentQtyReceived($request->user_id, $request->product_id)->qtyreceived;
+        $current_qtyout = stockcard::currentQtyOut($request->user_id, $request->product_id)->qtyout;
+
+        $qtyreceived_diff = $current_qtyreceived - $request->edit_qtyreceived;
+        $qtyout_diff = $current_qtyout - $request->edit_qtyout;
 
         $stock = stockcard::where('id' ,$request->card_id)->first();
          $stock->update([
@@ -78,13 +77,36 @@ class Stock extends Controller
             'qtyout' => $request->edit_qtyout,
             'invoiceno' => $request->edit_invoiceno,
             'bacthno' => $request->edit_bacthno,
-            'currentbalance' => $newbalance,
             'mfd_date' => $request->edit_mfd_date,
             'exp_date' => $request->edit_exp_date,
             'remark' => $request->edit_remark
         ]);
 
-        return response()->json(['data' => $stock], 200);
+         if($current_qtyreceived != $request->edit_qtyreceived) {
+             if ($this->isNegative($qtyreceived_diff)) {
+                 stockcard::clerkCard($request->user_id)->increment('currentbalance', abs($qtyreceived_diff));
+             } else {
+                 stockcard::clerkCard($request->user_id)->decrement('currentbalance', abs($qtyreceived_diff));
+             }
+         }
+
+        if($qtyout_diff != $request->edit_qtyout) {
+            if ($this->isNegative($qtyout_diff)) {
+                stockcard::clerkCard($request->user_id)->decrement('currentbalance', abs($qtyout_diff));
+            } else {
+                stockcard::clerkCard($request->user_id)->increment('currentbalance', abs($qtyout_diff));
+            }
+        }
+
+        return response()->json($stock, 200);
+    }
+
+    private function isNegative($a){
+        if($a < 0){
+            return true;
+        }else{
+            return false;
+        }
     }
 
     public function getSuperAgents(Request $request)

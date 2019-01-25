@@ -25,4 +25,14 @@ class stockcard extends Model implements Auditable
     {
         return $query->where('user_id', $user_id)->where('product_id', $product_id)->latest()->select('currentbalance')->first();
     }
+
+    public function scopeCurrentQtyOut($query,$user_id, $product_id)
+    {
+        return $query->where('user_id', $user_id)->where('product_id', $product_id)->select('qtyout')->first();
+    }
+
+    public function scopeCurrentQtyReceived($query,$user_id, $product_id)
+    {
+        return $query->where('user_id', $user_id)->where('product_id', $product_id)->select('qtyreceived')->first();
+    }
 }

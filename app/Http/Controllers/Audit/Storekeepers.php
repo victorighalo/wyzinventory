@@ -34,17 +34,37 @@ class Storekeepers extends Controller
 
     public function getSuperAgentsStockData($user_id){
         $data = stockcard::clerkCard($user_id)->get();
-        return Datatables::of($data)->editColumn('created_at', function ($data) {
+        $fil = [];
+        foreach ($data as $item){
+            if( $pass = product::where('id', $item->product_id)->first() ){
+                $fil[] = $item;
+            }
+        }
+
+
+        return Datatables::of($fil)->editColumn('created_at', function ($data) {
             return $data->created_at ? with(new Carbon($data->created_at))->toDayDateTimeString() : '';
         })
-            ->addColumn('action', function ($data) use($user_id) {
+//            ->addColumn('action', function ($data) use($user_id) {
+//                return '<td>
+//<a  class="text-white" href="'.route('get_storekeepers_stock_audittrail',['product_id' => $data->product_id, 'user_id' => $user_id]).'">
+//                    <button  class="btn btn-primary btn-sm" type="button" id="settingcol">Audit trail </button>
+//                    </a>
+//                        </td>';
+//            })
+            ->addColumn('action', function ($data) {
                 return '<td>
-<a  class="text-white" href="'.route('get_storekeepers_stock_audittrail',['product_id' => $data->product_id, 'user_id' => $user_id]).'"> 
-                    <button  class="btn btn-primary btn-sm" type="button" id="settingcol">Audit trail </button>
-                    </a>
+                    <button  class="btn btn-primary btn-sm editcard" id="'.$data->id.'" data-product_id="'.$data->product_id.'" data-user_id="'.$data->user_id.'" type="button"> Edit Card </button>
+            
                         </td>';
-            }) ->addColumn('productname', function($data) {
+            })
+            ->addColumn('productname', function($data) {
                 return product::where('id', $data->product_id)->select('name')->first()->name;
+            })
+            ->editColumn('mfd_date', function($product) {
+                return Carbon::parse($product->mfd_date)->format('Y-m-d');
+            }) ->editColumn('exp_date', function($product) {
+                return Carbon::parse($product->exp_date)->format('Y-m-d');
             })
             ->make(true);
     }
