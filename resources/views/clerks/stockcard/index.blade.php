@@ -157,7 +157,7 @@
                                     <th>MFD date</th>
                                     <th>EXP date</th>
                                     <th>Remark</th>
-                                    <th>Action</th>
+                                    {{--<th>Action</th>--}}
 
                                 </tr>
                                 </thead>
@@ -409,7 +409,7 @@
     { data: 'mfd_date', name: 'mfd_date' },
     { data: 'exp_date', name: 'exp_date' },
     { data: 'remark', name: 'remark' },
-    {data: 'action', name: 'action', orderable: false, searchable: false}
+    // {data: 'action', name: 'action', orderable: false, searchable: false}
 
     ],
         "dom": 'lBrtip',
