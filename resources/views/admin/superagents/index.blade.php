@@ -181,7 +181,7 @@
         var superagentstable = $('#users-table').DataTable({
             processing: true,
             serverSide: true,
-            ajax: '{!! route('get_superagents') !!}',
+            ajax: '{!! route('get_storekeepers') !!}',
             columns: [
                 { data: 'firstname', name: 'firstname' },
                 { data: 'email', name: 'email' },

@@ -8,7 +8,7 @@
                 <div class="col-lg-4 mx-auto">
                     <div class="auth-form-dark text-left p-5">
                         <h2>Login</h2>
-                        <form class="pt-5" method="POST" action="{{ route('login') }}">
+                        <form class="pt-5" method="POST" action="{{ route('authenticate_user') }}">
                             @csrf
                                 <div class="form-group">
                                     <label for="email">Email</label>

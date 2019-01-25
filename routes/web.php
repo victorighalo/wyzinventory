@@ -11,6 +11,8 @@
 |
 */
 
+Route::post('auth/login', 'LoginController@authenticate')->name('authenticate_user');
+
 Route::get('/','Common\Dashboard@index');
 Route::get('customers','Customers\Customers@index');
 Route::get('agents','Agents\Agents@index');
@@ -24,7 +26,7 @@ Route::get('superagent/destroy/{id}', 'Agents\SuperAgents@destroy');
 Route::get('account/deactivate/{id}', 'Common\Settings@deactivate');
 Route::get('account/activate/{id}', 'Common\Settings@activate');
 Route::get('storekeepers','Agents\SuperAgents@index');
-Route::get('get_superagents','Agents\SuperAgents@getSuperAgents')->name('get_superagents');
+Route::get('get_storekeepers','Agents\SuperAgents@getSuperAgents')->name('get_storekeepers');
 
 Route::get('common/load_cites/{id}', 'Common\Settings@loadCities');
 
